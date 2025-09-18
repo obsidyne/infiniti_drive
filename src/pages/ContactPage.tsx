@@ -188,8 +188,8 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <h3 className="text-white font-semibold">Address</h3>
-                    <p className="text-gray-400">123 Bike Street</p>
-                    <p className="text-gray-400">City, State 12345</p>
+                    <p className="text-gray-400">GWX5+PFH, Sreekariyam - Kazhakuttam Rd, Ambady Nagar, Amadi Nagar, Sreekariyam, Thiruvananthapuram, Kerala 695017</p>
+                   
                   </div>
                 </div>
 
@@ -213,8 +213,9 @@ const ContactPage = () => {
               <div className="aspect-video bg-gray-700 rounded-lg flex items-center justify-center">
                 <div className="text-center text-gray-400">
                   <MapPin className="h-12 w-12 mx-auto mb-4" />
+                  {/* <iframe className='h-12 w-12 mx-auto mb-4' src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3945.484657179884!2d76.90614607449467!3d8.549305696314349!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05bf006fcfc32f%3A0x3dd28e6749923dce!2sINFINITI%20DRIVES!5e0!3m2!1sen!2sin!4v1758216717464!5m2!1sen!2sin"  loading="lazy" ></iframe>
                   <p>Interactive map would be integrated here</p>
-                  <p className="text-sm mt-2">123 Bike Street, City, State 12345</p>
+                  <p className="text-sm mt-2">123 Bike Street, City, State 12345</p> */}
                 </div>
               </div>
             </div>

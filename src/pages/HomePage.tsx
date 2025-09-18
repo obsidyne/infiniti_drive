@@ -50,49 +50,62 @@ const HomePage = () => {
       </section>
 
       {/* About Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-20 w-72 h-72 bg-green-500/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-500/5 rounded-full blur-3xl animate-pulse delay-500"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Content */}
-            <div>
+            <div className="space-y-6">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
                 About Infiniti Drive
               </h2>
-              <p className="text-gray-400 text-lg mb-6 leading-relaxed">
-                With over years of experience in the motorcycle industry, Infiniti Drive has established 
-                itself as the most trusted name in second-hand bike sales. We specialize in providing 
-                high-quality, thoroughly inspected motorcycles that deliver exceptional value and reliability.
-              </p>
-              <p className="text-gray-400 text-lg mb-8 leading-relaxed">
-                Our commitment to transparency, quality assurance, and customer satisfaction has helped 
-                thousands of riders find their perfect bike. Every motorcycle in our inventory undergoes 
-                rigorous inspection and comes with comprehensive warranty protection.
-              </p>
+              <div className="space-y-6">
+                <p className="text-gray-300 text-lg leading-relaxed drop-shadow-sm">
+                  With over years of experience in the motorcycle industry, Infiniti Drive has established 
+                  itself as the most trusted name in second-hand bike sales. We specialize in providing 
+                  high-quality, thoroughly inspected motorcycles that deliver exceptional value and reliability.
+                </p>
+                <p className="text-gray-300 text-lg leading-relaxed drop-shadow-sm">
+                  Our commitment to transparency, quality assurance, and customer satisfaction has helped 
+                  thousands of riders find their perfect bike. Every motorcycle in our inventory undergoes 
+                  rigorous inspection and comes with comprehensive warranty protection.
+                </p>
+              </div>
               
               <div className="grid grid-cols-2 gap-6 mb-8">
-                <div className="text-center p-4 bg-gray-800 rounded-lg">
-                  <div className="text-3xl font-bold text-green-400 mb-2">5000+</div>
-                  <div className="text-gray-400">Bikes Sold</div>
-                </div>
-                <div className="text-center p-4 bg-gray-800 rounded-lg">
-                  <div className="text-3xl font-bold text-blue-400 mb-2">15+</div>
-                  <div className="text-gray-400">Years Experience</div>
-                </div>
-                <div className="text-center p-4 bg-gray-800 rounded-lg">
-                  <div className="text-3xl font-bold text-green-400 mb-2">3000+</div>
-                  <div className="text-gray-400">Happy Customers</div>
-                </div>
-                <div className="text-center p-4 bg-gray-800 rounded-lg">
-                  <div className="text-3xl font-bold text-blue-400 mb-2">25+</div>
-                  <div className="text-gray-400">Locations</div>
-                </div>
+                {[
+                  { number: "5000+", label: "Bikes Sold", color: "green" },
+                  { number: "15+", label: "Years Experience", color: "blue" },
+                  { number: "3000+", label: "Happy Customers", color: "green" },
+                  { number: "25+", label: "Locations", color: "blue" }
+                ].map((stat, index) => (
+                  <div 
+                    key={index}
+                    className="text-center p-6 bg-gradient-to-br from-gray-800/80 to-gray-700/80 backdrop-blur-sm rounded-xl 
+                             border border-gray-600/30 hover:border-gray-500/50 transform hover:scale-105 transition-all duration-300
+                             hover:shadow-xl hover:shadow-green-500/10 group"
+                  >
+                    <div className={`text-3xl font-bold ${stat.color === 'green' ? 'text-green-400' : 'text-blue-400'} 
+                                   mb-2 group-hover:drop-shadow-lg transition-all duration-300`}>
+                      {stat.number}
+                    </div>
+                    <div className="text-gray-300 font-medium">{stat.label}</div>
+                  </div>
+                ))}
               </div>
 
               <Link
                 to="/about"
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white 
-                         rounded-lg font-semibold hover:from-green-600 hover:to-blue-600 transform hover:scale-105 
-                         transition-all duration-300 shadow-lg hover:shadow-xl group"
+                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-blue-500 text-white 
+                         rounded-xl font-semibold hover:from-green-600 hover:to-blue-600 transform hover:scale-105 
+                         transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-green-500/25 group
+                         border border-green-400/20 hover:border-green-400/40"
               >
                 Learn More About Us
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
@@ -101,30 +114,44 @@ const HomePage = () => {
 
             {/* Image */}
             <div className="relative">
-              <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl group">
                 <img 
                   src="z900.jpg"
                   alt="About Infiniti Drive"
-                  className="w-full h-96 object-cover"
+                  className="w-full h-96 object-cover group-hover:scale-110 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-blue-500/20"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-blue-500/20 group-hover:from-green-500/30 group-hover:to-blue-500/30 transition-all duration-300"></div>
+                <div className="absolute inset-0 ring-1 ring-white/20 rounded-2xl"></div>
+                
+                {/* Glowing border effect */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
-              
-              {/* Floating Stats */}
-          
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-gradient-to-br from-gray-800 via-gray-900 to-gray-800 relative overflow-hidden">
+        {/* Animated background grid */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `radial-gradient(circle at 25px 25px, #10b981 2px, transparent 0)`,
+            backgroundSize: '50px 50px'
+          }}></div>
+        </div>
+        
+        {/* Floating orbs */}
+        <div className="absolute top-40 left-10 w-32 h-32 bg-green-500/20 rounded-full blur-2xl animate-bounce"></div>
+        <div className="absolute bottom-40 right-10 w-40 h-40 bg-blue-500/20 rounded-full blur-2xl animate-bounce delay-700"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent
+                         drop-shadow-sm">
               Why Choose Infiniti Drive?
             </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
               We provide exceptional service and quality assurance for every bike in our collection.
             </p>
           </div>
@@ -134,35 +161,53 @@ const HomePage = () => {
               {
                 icon: <Star className="h-8 w-8" />,
                 title: "Quality Assured",
-                description: "Every bike is thoroughly inspected and certified for quality."
+                description: "Every bike is thoroughly inspected and certified for quality.",
+                gradient: "from-yellow-400 to-orange-500"
               },
               {
                 icon: <Shield className="h-8 w-8" />,
                 title: "Warranty Protection",
-                description: "Comprehensive warranty coverage for peace of mind."
+                description: "Comprehensive warranty coverage for peace of mind.",
+                gradient: "from-blue-400 to-purple-500"
               },
               {
                 icon: <Wrench className="h-8 w-8" />,
                 title: "Expert Service",
-                description: "Professional maintenance and repair services available."
+                description: "Professional maintenance and repair services available.",
+                gradient: "from-green-400 to-teal-500"
               },
               {
                 icon: <Users className="h-8 w-8" />,
                 title: "Trusted by Thousands",
-                description: "Join our community of satisfied customers nationwide."
+                description: "Join our community of satisfied customers nationwide.",
+                gradient: "from-pink-400 to-red-500"
               }
             ].map((feature, index) => (
               <div
                 key={index}
-                className="text-center p-6 rounded-lg bg-gray-700 hover:bg-gray-600 transition-all duration-300 
-                         transform hover:scale-105 hover:shadow-xl"
+                className="text-center p-8 rounded-2xl bg-gradient-to-br from-gray-800/60 to-gray-700/60 backdrop-blur-sm
+                         border border-gray-600/30 hover:border-gray-500/50 transition-all duration-500 
+                         transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl group
+                         hover:shadow-green-500/10 relative overflow-hidden"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 
-                              rounded-full mb-4 text-white">
+                {/* Background glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div className={`inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r ${feature.gradient}
+                              rounded-2xl mb-6 text-white shadow-lg group-hover:shadow-xl transition-all duration-300
+                              group-hover:scale-110 relative z-10`}>
                   {feature.icon}
+                  {/* Icon glow */}
+                  <div className={`absolute inset-0 bg-gradient-to-r ${feature.gradient} rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300`}></div>
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-white">{feature.title}</h3>
-                <p className="text-gray-400">{feature.description}</p>
+                
+                <h3 className="text-xl font-bold mb-4 text-white group-hover:text-green-400 transition-colors duration-300 relative z-10">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-300 leading-relaxed relative z-10">{feature.description}</p>
+                
+                {/* Hover border glow */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
               </div>
             ))}
           </div>
@@ -170,32 +215,77 @@ const HomePage = () => {
       </section>
 
       {/* Featured Bikes Section */}
-      <section className="py-20 bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
+        {/* Dynamic background pattern */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-radial from-green-500/10 to-transparent rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-radial from-blue-500/10 to-transparent rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+        
+        {/* Animated particles */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 bg-green-400/30 rounded-full animate-pulse"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${2 + Math.random() * 3}s`
+              }}
+            ></div>
+          ))}
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent
+                         drop-shadow-sm animate-pulse">
               Featured Bikes
             </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
               Check out our handpicked selection of premium bikes available now.
             </p>
+            
+            {/* Decorative line */}
+            <div className="mt-8 flex justify-center">
+              <div className="w-24 h-1 bg-gradient-to-r from-green-400 to-blue-400 rounded-full shadow-lg shadow-green-500/50"></div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredBikes.map((bike) => (
-              <BikeCard key={bike.id} bike={bike} featured />
+            {featuredBikes.map((bike, index) => (
+              <div 
+                key={bike.id}
+                className="transform transition-all duration-500 hover:scale-105 hover:-translate-y-3"
+                style={{ animationDelay: `${index * 200}ms` }}
+              >
+                <div className="relative group">
+                  <BikeCard bike={bike} featured />
+                  {/* Card glow effect */}
+                  <div className="absolute -inset-2 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+                </div>
+              </div>
             ))}
           </div>
 
-          <div className="text-center mt-12">
+          <div className="text-center mt-16">
             <Link
               to="/catalogue"
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white 
-                       rounded-lg font-semibold hover:from-green-600 hover:to-blue-600 transform hover:scale-105 
-                       transition-all duration-300 shadow-lg hover:shadow-xl group"
+              className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-green-500 to-blue-500 text-white 
+                       rounded-xl font-bold text-lg hover:from-green-600 hover:to-blue-600 transform hover:scale-110 
+                       transition-all duration-300 shadow-2xl hover:shadow-green-500/25 group relative overflow-hidden
+                       border border-green-400/30 hover:border-green-400/60"
             >
-              View All Bikes
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+              {/* Button glow background */}
+              <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-blue-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              
+              <span className="relative z-10">View All Bikes</span>
+              <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform duration-300 relative z-10" />
+              
+              {/* Animated shine effect */}
+              <div className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-300"></div>
             </Link>
           </div>
         </div>
