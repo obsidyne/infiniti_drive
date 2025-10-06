@@ -169,12 +169,12 @@ const AboutPage = () => {
         </div>
 
         {/* Team Section */}
-        <div className="mt-20">
+        {/* <div className="mt-20">
           <h2 className="text-3xl font-bold text-center mb-16 bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent drop-shadow-sm">
             Meet Our Team
           </h2>
           
-          {/* Decorative line */}
+         
           <div className="flex justify-center mb-16">
             <div className="w-24 h-1 bg-gradient-to-r from-green-400 to-blue-400 rounded-full shadow-lg shadow-green-500/50"></div>
           </div>
@@ -211,10 +211,10 @@ const AboutPage = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="absolute inset-0 ring-1 ring-white/20 rounded-2xl"></div>
                   
-                  {/* Profile glow */}
+                
                   <div className="absolute -inset-1 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
                   
-                  {/* Hover overlay with info */}
+                  
                   <div className="absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="text-center">
                       <div className="w-12 h-1 bg-gradient-to-r from-green-400 to-blue-400 rounded-full mx-auto"></div>
@@ -223,7 +223,7 @@ const AboutPage = () => {
                 </div>
                 
                 <div className="bg-gradient-to-br from-gray-800/60 to-gray-700/60 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30 group-hover:border-gray-500/50 transition-all duration-300 shadow-lg group-hover:shadow-xl relative overflow-hidden">
-                  {/* Background glow */}
+                  
                   <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   
                   <h3 className="text-xl font-bold text-white mb-2 group-hover:text-green-400 transition-colors duration-300 relative z-10">
@@ -233,16 +233,16 @@ const AboutPage = () => {
                     {member.role}
                   </p>
                   
-                  {/* Card glow */}
+
                   <div className="absolute -inset-1 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
 
-      {/* Custom CSS for animations */}
+      
       <style >{`
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(30px); }

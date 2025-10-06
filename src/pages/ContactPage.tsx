@@ -1,8 +1,19 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react';
+import { BASE_URL } from '../data/url';
 
-const ContactPage = () => {
-  const [formData, setFormData] = useState({
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
+type SubmitStatus = 'idle' | 'success' | 'error';
+
+const ContactPage: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     phone: '',
@@ -10,31 +21,65 @@ const ContactPage = () => {
     message: ''
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ): void => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    alert('Thank you for your message! We\'ll get back to you soon.');
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: ''
-    });
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/enquiries`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          data: {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            Subject: formData.subject,
+            Message: formData.message
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
+      }
+
+      setSubmitStatus('success');
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: ''
+      });
+
+      setTimeout(() => setSubmitStatus('idle'), 5000);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="min-h-screen py-20">
+    <div className="min-h-screen py-20 bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
             Contact Us
@@ -45,10 +90,9 @@ const ContactPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Form */}
           <div className="bg-gray-800 rounded-2xl p-8">
             <h2 className="text-2xl font-bold text-white mb-6">Send us a Message</h2>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
@@ -139,21 +183,32 @@ const ContactPage = () => {
               </div>
 
               <button
-                type="submit"
+                type="button"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
                 className="w-full px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white 
                          rounded-lg font-semibold hover:from-green-600 hover:to-blue-600 
                          transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl 
-                         flex items-center justify-center group"
+                         flex items-center justify-center group disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 <Send className="mr-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
-                Send Message
+                {isSubmitting ? 'Sending...' : 'Send Message'}
               </button>
-            </form>
+
+              {submitStatus === 'success' && (
+                <div className="p-4 bg-green-500/20 border border-green-500 rounded-lg text-green-400">
+                  Thank you for your message! We'll get back to you soon.
+                </div>
+              )}
+              {submitStatus === 'error' && (
+                <div className="p-4 bg-red-500/20 border border-red-500 rounded-lg text-red-400">
+                  Oops! Something went wrong. Please try again later.
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Contact Information */}
           <div className="space-y-8">
-            {/* Contact Details */}
             <div className="bg-gray-800 rounded-2xl p-8">
               <h2 className="text-2xl font-bold text-white mb-6">Get in Touch</h2>
               <div className="space-y-6">
@@ -189,7 +244,6 @@ const ContactPage = () => {
                   <div>
                     <h3 className="text-white font-semibold">Address</h3>
                     <p className="text-gray-400">GWX5+PFH, Sreekariyam - Kazhakuttam Rd, Ambady Nagar, Amadi Nagar, Sreekariyam, Thiruvananthapuram, Kerala 695017</p>
-                   
                   </div>
                 </div>
 
@@ -207,16 +261,17 @@ const ContactPage = () => {
               </div>
             </div>
 
-            {/* Map */}
             <div className="bg-gray-800 rounded-2xl p-8">
               <h2 className="text-2xl font-bold text-white mb-6">Find Us</h2>
-              <div className="aspect-video bg-gray-700 rounded-lg flex items-center justify-center">
-                <div className="text-center text-gray-400">
-                  <MapPin className="h-12 w-12 mx-auto mb-4" />
-                  {/* <iframe className='h-12 w-12 mx-auto mb-4' src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3945.484657179884!2d76.90614607449467!3d8.549305696314349!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05bf006fcfc32f%3A0x3dd28e6749923dce!2sINFINITI%20DRIVES!5e0!3m2!1sen!2sin!4v1758216717464!5m2!1sen!2sin"  loading="lazy" ></iframe>
-                  <p>Interactive map would be integrated here</p>
-                  <p className="text-sm mt-2">123 Bike Street, City, State 12345</p> */}
-                </div>
+              <div className="aspect-video bg-gray-700 rounded-lg overflow-hidden">
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3945.484657179884!2d76.90614607449467!3d8.549305696314349!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05bf006fcfc32f%3A0x3dd28e6749923dce!2sINFINITI%20DRIVES!5e0!3m2!1sen!2sin!4v1758216717464!5m2!1sen!2sin" 
+                  width="100%" 
+                  height="100%" 
+                  style={{ border: 0 }}
+                  loading="lazy"
+                  title="INFINITI DRIVES Location"
+                ></iframe>
               </div>
             </div>
           </div>

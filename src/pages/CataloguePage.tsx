@@ -1,21 +1,180 @@
-import React, { useState, useMemo } from 'react';
-import { Search, Filter, SortAsc } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Search, Filter, SortAsc, EyeOff, Eye } from 'lucide-react';
 import BikeCard from '../components/BikeCard';
-import { bikes } from '../data/bikes';
+import { BASE_URL } from '../data/url';
 
-const CataloguePage = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('name');
-  const [filterBrand, setFilterBrand] = useState('');
-  const [priceRange, setPriceRange] = useState([0, 5000000]);
-  const [showFilters, setShowFilters] = useState(false);
+// Strapi API Response Types
+interface StrapiImageFormat {
+  name: string;
+  hash: string;
+  ext: string;
+  mime: string;
+  path: string | null;
+  width: number;
+  height: number;
+  size: number;
+  sizeInBytes: number;
+  url: string;
+}
 
-  const brands = [...new Set(bikes.map(bike => bike.brand))];
+interface StrapiImage {
+  id: number;
+  documentId: string;
+  name: string;
+  alternativeText: string | null;
+  caption: string | null;
+  width: number;
+  height: number;
+  formats: {
+    thumbnail?: StrapiImageFormat;
+    small?: StrapiImageFormat;
+    medium?: StrapiImageFormat;
+    large?: StrapiImageFormat;
+  };
+  hash: string;
+  ext: string;
+  mime: string;
+  size: number;
+  url: string;
+  previewUrl: string | null;
+  provider: string;
+  provider_metadata: any;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
 
-  console.log(bikes)
+interface StrapiBike {
+  id: number;
+  documentId: string;
+  model_name: string;
+  brand: string;
+  description: string;
+  distance_driven: string;
+  year: string;
+  owner: string;
+  price: string;
+  Engine: string;
+  hp: string;
+  torque: string;
+  fuel_type: string;
+  transmission: string;
+  top_speed: string;
+  milage: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  sold: boolean | null;
+  thumpnail: StrapiImage | null;
+  images: any;
+}
 
-  const filteredAndSortedBikes = useMemo(() => {
-    let filtered = bikes.filter(bike => 
+interface StrapiResponse {
+  data: StrapiBike[];
+  meta: {
+    pagination: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
+}
+
+// App Bike Type
+interface Bike {
+  id: number;
+  name: string;
+  brand: string;
+  description: string;
+  kmDriven: number;
+  year: number;
+  owner: string;
+  documentId: string ,
+  price: number;
+  engine: string;
+  hp: string;
+  torque: string;
+  fuelType: string;
+  transmission: string;
+  topSpeed: number;
+  mileage: number;
+  sold: boolean;
+  image: string | null;
+}
+
+type SortOption = 'name' | 'price-low' | 'price-high' | 'year-new' | 'year-old' | 'km-low' | 'km-high';
+
+const CataloguePage: React.FC = () => {
+  const [bikes, setBikes] = useState<Bike[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [sortBy, setSortBy] = useState<SortOption>('name');
+  const [filterBrand, setFilterBrand] = useState<string>('');
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000000]);
+  const [showFilters, setShowFilters] = useState<boolean>(false);
+  const [showSoldBikes, setShowSoldBikes] = useState<boolean>(true);
+
+  // Fetch bikes from Strapi API
+  useEffect(() => {
+    const fetchBikes = async (): Promise<void> => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${BASE_URL}/api/bikes?populate=*`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch bikes');
+        }
+        
+        const result: StrapiResponse = await response.json();
+
+        console.log(result)
+        
+        // Transform Strapi data to match component structure
+        const transformedBikes: Bike[] = result.data.map((bike: StrapiBike) => ({
+          id: bike.id,
+          name: bike.model_name,
+          brand: bike.brand,
+          description: bike.description,
+          kmDriven: parseInt(bike.distance_driven) || 0,
+          year: parseInt(bike.year) || 0,
+          owner: bike.owner,
+          documentId : bike.documentId  , 
+          price: parseInt(bike.price) || 0,
+          engine: bike.Engine,
+          hp: bike.hp,
+          torque: bike.torque,
+          fuelType: bike.fuel_type,
+          transmission: bike.transmission,
+          topSpeed: parseInt(bike.top_speed) || 0,
+          mileage: parseInt(bike.milage) || 0,
+          sold: bike.sold || false,
+          image: bike.thumpnail?.url ? `${BASE_URL}${bike.thumpnail.url}` : null
+        }));
+        
+        setBikes(transformedBikes);
+        setLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        setLoading(false);
+      }
+    };
+
+    fetchBikes();
+  }, []);
+
+  const brands: string[] = [...new Set(bikes.map(bike => bike.brand))];
+
+  // Separate bikes into available and sold
+  const { availableBikes, soldBikes } = useMemo(() => {
+    const available = bikes.filter(bike => !bike.sold);
+    const sold = bikes.filter(bike => bike.sold);
+    return { availableBikes: available, soldBikes: sold };
+  }, [bikes]);
+
+  const filterAndSortBikes = (bikesToFilter: Bike[]): Bike[] => {
+    let filtered = bikesToFilter.filter(bike => 
       bike.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (filterBrand === '' || bike.brand === filterBrand) &&
       bike.price >= priceRange[0] && bike.price <= priceRange[1]
@@ -41,7 +200,86 @@ const CataloguePage = () => {
     });
 
     return filtered;
-  }, [searchTerm, sortBy, filterBrand, priceRange]);
+  };
+
+  const filteredAvailableBikes = useMemo(() => 
+    filterAndSortBikes(availableBikes), 
+    [availableBikes, searchTerm, sortBy, filterBrand, priceRange]
+  );
+
+  const filteredSoldBikes = useMemo(() => 
+    filterAndSortBikes(soldBikes), 
+    [soldBikes, searchTerm, sortBy, filterBrand, priceRange]
+  );
+
+  const handleClearFilters = (): void => {
+    setSearchTerm('');
+    setFilterBrand('');
+    setPriceRange([0, 5000000]);
+    setSortBy('name');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-green-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-300 text-xl">Loading bikes...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-8 bg-red-900/20 border border-red-500/30 rounded-2xl">
+          <p className="text-red-400 text-xl mb-4">Error loading bikes</p>
+          <p className="text-gray-300">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  interface BikeGridProps {
+    bikes: Bike[];
+    label: string;
+  }
+
+  const BikeGrid: React.FC<BikeGridProps> = ({ bikes, label }) => (
+    <>
+      {bikes.length > 0 && (
+        <>
+          <div className="mb-8">
+            <div className="inline-block px-6 py-3 bg-gradient-to-r from-gray-800/60 to-gray-700/60 backdrop-blur-sm rounded-xl border border-gray-600/30 shadow-lg">
+              <p className="text-gray-300 font-medium">
+                {label}: <span className="text-green-400 font-bold">{bikes.length}</span> bikes
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {bikes.map((bike, index) => (
+              <div 
+                key={bike.id}
+                className="transform transition-all duration-500 hover:scale-105 hover:-translate-y-2 group"
+                style={{ 
+                  animationDelay: `${index * 100}ms`,
+                  animation: 'fadeInUp 0.6s ease-out forwards'
+                }}
+              >
+                <div className="relative">
+                  <BikeCard bike={bike} />
+                  {/* <div className="absolute -inset-2 bg-gradient-to-r from-green-500/15 to-blue-500/15 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500 -z-10"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-500"></div> */}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </>
+  );
 
   return (
     <div className="min-h-screen py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
@@ -86,7 +324,6 @@ const CataloguePage = () => {
 
         {/* Search and Filter Bar */}
         <div className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 backdrop-blur-sm rounded-2xl p-8 mb-12 border border-gray-600/30 hover:border-gray-500/50 transition-all duration-300 shadow-2xl shadow-green-500/5 relative overflow-hidden">
-          {/* Background glow */}
           <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-blue-500/5 opacity-50"></div>
           
           <div className="flex flex-col lg:flex-row gap-6 items-center relative z-10">
@@ -102,7 +339,6 @@ const CataloguePage = () => {
                          focus:ring-2 focus:ring-green-500/50 focus:border-green-400/50 hover:border-gray-500/70 transition-all duration-300 shadow-lg
                          hover:shadow-green-500/10 focus:shadow-green-500/20"
               />
-              {/* Input glow effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-300 -z-10"></div>
             </div>
 
@@ -111,7 +347,7 @@ const CataloguePage = () => {
               <SortAsc className="text-gray-400 h-5 w-5 group-hover:text-blue-400 transition-colors duration-300" />
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                onChange={(e) => setSortBy(e.target.value as SortOption)}
                 className="px-6 py-4 bg-gray-700/80 backdrop-blur-sm border border-gray-600/50 rounded-xl text-white
                          focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/50 hover:border-gray-500/70 transition-all duration-300
                          shadow-lg hover:shadow-blue-500/10 focus:shadow-blue-500/20 cursor-pointer"
@@ -133,18 +369,35 @@ const CataloguePage = () => {
                        rounded-xl text-white transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl
                        hover:shadow-green-500/25 group relative overflow-hidden border border-green-400/30"
             >
-              {/* Button glow */}
               <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-blue-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              
               <Filter className="h-5 w-5 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
               <span className="font-semibold relative z-10">Filters</span>
             </button>
+
+            {/* Show/Hide Sold Bikes Toggle */}
+            {soldBikes.length > 0 && (
+              <button
+                onClick={() => setShowSoldBikes(!showSoldBikes)}
+                className="flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600
+                         rounded-xl text-white transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl
+                         hover:shadow-purple-500/25 group relative overflow-hidden border border-purple-400/30"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-400/20 to-pink-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                {showSoldBikes ? (
+                  <EyeOff className="h-5 w-5 relative z-10" />
+                ) : (
+                  <Eye className="h-5 w-5 relative z-10" />
+                )}
+                <span className="font-semibold relative z-10">
+                  {showSoldBikes ? 'Hide' : 'Show'} Sold
+                </span>
+              </button>
+            )}
           </div>
 
           {/* Filters */}
           {showFilters && (
             <div className="mt-8 pt-8 border-t border-gray-600/30 relative">
-              {/* Animated expand effect */}
               <div className="animate-fadeIn">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {/* Brand Filter */}
@@ -167,7 +420,7 @@ const CataloguePage = () => {
                   {/* Price Range */}
                   <div className="group">
                     <label className="block text-sm font-semibold text-gray-300 mb-3 group-hover:text-blue-400 transition-colors duration-300">
-                      Price Range: Rs.{priceRange[0]} - Rs.{priceRange[1]}
+                      Price Range: Rs.{priceRange[0].toLocaleString()} - Rs.{priceRange[1].toLocaleString()}
                     </label>
                     <div className="flex space-x-3">
                       <input
@@ -183,7 +436,7 @@ const CataloguePage = () => {
                         type="number"
                         placeholder="Max"
                         value={priceRange[1]}
-                        onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 50000])}
+                        onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 5000000])}
                         className="w-full px-4 py-3 bg-gray-700/80 backdrop-blur-sm border border-gray-600/50 rounded-xl text-white placeholder-gray-400
                                  focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/50 hover:border-gray-500/70 transition-all duration-300
                                  shadow-lg hover:shadow-blue-500/10"
@@ -194,17 +447,11 @@ const CataloguePage = () => {
                   {/* Clear Filters */}
                   <div className="flex items-end">
                     <button
-                      onClick={() => {
-                        setSearchTerm('');
-                        setFilterBrand('');
-                        setPriceRange([0, 50000]);
-                        setSortBy('name');
-                      }}
+                      onClick={handleClearFilters}
                       className="w-full px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600
                                rounded-xl text-white font-semibold transition-all duration-300 transform hover:scale-105
                                shadow-lg hover:shadow-xl hover:shadow-red-500/25 group relative overflow-hidden"
                     >
-                      {/* Button glow */}
                       <div className="absolute inset-0 bg-gradient-to-r from-red-400/20 to-pink-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <span className="relative z-10">Clear Filters</span>
                     </button>
@@ -214,47 +461,31 @@ const CataloguePage = () => {
             </div>
           )}
           
-          {/* Filter card glow */}
           <div className="absolute -inset-1 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-2xl blur opacity-50 -z-10"></div>
         </div>
 
-        {/* Results Count */}
-        <div className="mb-8">
-          <div className="inline-block px-6 py-3 bg-gradient-to-r from-gray-800/60 to-gray-700/60 backdrop-blur-sm rounded-xl border border-gray-600/30 shadow-lg">
-            <p className="text-gray-300 font-medium">
-              Showing <span className="text-green-400 font-bold">{filteredAndSortedBikes.length}</span> of <span className="text-blue-400 font-bold">{bikes.length}</span> bikes
-            </p>
-          </div>
-        </div>
+        {/* Available Bikes Section */}
+        <BikeGrid bikes={filteredAvailableBikes} label="Available Bikes" />
 
-        {/* Bikes Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredAndSortedBikes.map((bike, index) => (
-            <div 
-              key={bike.id}
-              className="transform transition-all duration-500 hover:scale-105 hover:-translate-y-2 group"
-              style={{ 
-                animationDelay: `${index * 100}ms`,
-                animation: 'fadeInUp 0.6s ease-out forwards'
-              }}
-            >
-              <div className="relative">
-                <BikeCard bike={bike} />
-                {/* Card glow effect */}
-                <div className="absolute -inset-2 bg-gradient-to-r from-green-500/15 to-blue-500/15 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500 -z-10"></div>
-                
-                {/* Hover shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-500"></div>
+        {/* Sold Bikes Section */}
+        {showSoldBikes && filteredSoldBikes.length > 0 && (
+          <div className="mt-16">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-gray-400 via-gray-300 to-gray-400 bg-clip-text text-transparent">
+                Sold Bikes
+              </h2>
+              <div className="flex justify-center">
+                <div className="w-24 h-1 bg-gradient-to-r from-gray-500 to-gray-400 rounded-full"></div>
               </div>
             </div>
-          ))}
-        </div>
+            <BikeGrid bikes={filteredSoldBikes} label="Sold" />
+          </div>
+        )}
 
         {/* No Results */}
-        {filteredAndSortedBikes.length === 0 && (
+        {filteredAvailableBikes.length === 0 && filteredSoldBikes.length === 0 && (
           <div className="text-center py-20">
             <div className="max-w-md mx-auto p-12 bg-gradient-to-br from-gray-800/60 to-gray-700/60 backdrop-blur-sm rounded-2xl border border-gray-600/30 shadow-2xl relative overflow-hidden">
-              {/* Background effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-orange-500/5"></div>
               
               <div className="relative z-10">
@@ -267,23 +498,16 @@ const CataloguePage = () => {
                 </p>
                 
                 <button
-                  onClick={() => {
-                    setSearchTerm('');
-                    setFilterBrand('');
-                    setPriceRange([0, 50000]);
-                    setSortBy('name');
-                  }}
+                  onClick={handleClearFilters}
                   className="px-8 py-4 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600
                            rounded-xl text-white font-semibold transition-all duration-300 transform hover:scale-105
                            shadow-lg hover:shadow-xl hover:shadow-green-500/25 group relative overflow-hidden"
                 >
-                  {/* Button glow */}
                   <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-blue-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <span className="relative z-10">Clear All Filters</span>
                 </button>
               </div>
               
-              {/* Card glow */}
               <div className="absolute -inset-1 bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-2xl blur opacity-50 -z-10"></div>
             </div>
           </div>
@@ -291,7 +515,7 @@ const CataloguePage = () => {
       </div>
 
       {/* Custom CSS for animations */}
-      <style >{`
+      <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(-10px); }
           to { opacity: 1; transform: translateY(0); }

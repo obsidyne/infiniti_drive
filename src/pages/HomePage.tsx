@@ -1,11 +1,162 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Star, Shield, Wrench, Users } from 'lucide-react';
 import BikeCard from '../components/BikeCard';
-import { bikes } from '../data/bikes';
+import { BASE_URL } from '../data/url';
 
-const HomePage = () => {
-  const featuredBikes = bikes.slice(0, 3);
+// Strapi API Response Types
+interface StrapiImageFormat {
+  name: string;
+  hash: string;
+  ext: string;
+  mime: string;
+  path: string | null;
+  width: number;
+  height: number;
+  size: number;
+  sizeInBytes: number;
+  url: string;
+}
+
+interface StrapiImage {
+  id: number;
+  documentId: string;
+  name: string;
+  alternativeText: string | null;
+  caption: string | null;
+  width: number;
+  height: number;
+  formats: {
+    thumbnail?: StrapiImageFormat;
+    small?: StrapiImageFormat;
+    medium?: StrapiImageFormat;
+    large?: StrapiImageFormat;
+  };
+  hash: string;
+  ext: string;
+  mime: string;
+  size: number;
+  url: string;
+  previewUrl: string | null;
+  provider: string;
+  provider_metadata: any;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+interface StrapiBike {
+  id: number;
+  documentId: string;
+  model_name: string;
+  brand: string;
+  description: string;
+  distance_driven: string;
+  year: string;
+  owner: string;
+  price: string;
+  Engine: string;
+  hp: string;
+  torque: string;
+  fuel_type: string;
+  transmission: string;
+  top_speed: string;
+  milage: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  sold: boolean | null;
+  thumpnail: StrapiImage | null;
+  images: any;
+}
+
+interface StrapiResponse {
+  data: StrapiBike[];
+  meta: {
+    pagination: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
+}
+
+// App Bike Type
+interface Bike {
+  id: number;
+  name: string;
+  brand: string;
+  description: string;
+  kmDriven: number;
+  year: number;
+  owner: string;
+  price: number;
+  engine: string;
+  hp: string;
+  torque: string;
+  fuelType: string;
+  transmission: string;
+  topSpeed: number;
+  mileage: number;
+  sold: boolean;
+  image: string | null;
+  documentId : string , 
+}
+
+const HomePage: React.FC = () => {
+  const [bikes, setBikes] = useState<Bike[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch bikes from Strapi API
+  useEffect(() => {
+    const fetchBikes = async (): Promise<void> => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${BASE_URL}/api/bikes?populate=*`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch bikes');
+        }
+        
+        const result: StrapiResponse = await response.json();
+        
+        // Transform Strapi data to match component structure
+        const transformedBikes: Bike[] = result.data.map((bike: StrapiBike) => ({
+          id: bike.id,
+          name: bike.model_name,
+          brand: bike.brand,
+          description: bike.description,
+          kmDriven: parseInt(bike.distance_driven) || 0,
+          year: parseInt(bike.year) || 0,
+          owner: bike.owner,
+          price: parseInt(bike.price) || 0,
+          engine: bike.Engine,
+          hp: bike.hp,
+          torque: bike.torque,
+          documentId : bike.documentId ,
+          fuelType: bike.fuel_type,
+          transmission: bike.transmission,
+          topSpeed: parseInt(bike.top_speed) || 0,
+          mileage: parseInt(bike.milage) || 0,
+          sold: bike.sold || false,
+          image: bike.thumpnail?.url ? `${BASE_URL}${bike.thumpnail.url}` : null
+        }));
+        
+        setBikes(transformedBikes);
+        setLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        setLoading(false);
+      }
+    };
+
+    fetchBikes();
+  }, []);
+
+  // Get featured bikes (first 3 available bikes)
+  const featuredBikes = bikes.filter(bike => !bike.sold).slice(0, 3);
 
   return (
     <div className="min-h-screen">
@@ -254,40 +405,70 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredBikes.map((bike, index) => (
-              <div 
-                key={bike.id}
-                className="transform transition-all duration-500 hover:scale-105 hover:-translate-y-3"
-                style={{ animationDelay: `${index * 200}ms` }}
-              >
-                <div className="relative group">
-                  <BikeCard bike={bike} featured />
-                  {/* Card glow effect */}
-                  <div className="absolute -inset-2 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Loading State */}
+          {loading && (
+            <div className="text-center py-20">
+              <div className="w-16 h-16 border-4 border-green-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-300 text-xl">Loading bikes...</p>
+            </div>
+          )}
 
-          <div className="text-center mt-16">
-            <Link
-              to="/catalogue"
-              className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-green-500 to-blue-500 text-white 
-                       rounded-xl font-bold text-lg hover:from-green-600 hover:to-blue-600 transform hover:scale-110 
-                       transition-all duration-300 shadow-2xl hover:shadow-green-500/25 group relative overflow-hidden
-                       border border-green-400/30 hover:border-green-400/60"
-            >
-              {/* Button glow background */}
-              <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-blue-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              
-              <span className="relative z-10">View All Bikes</span>
-              <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform duration-300 relative z-10" />
-              
-              {/* Animated shine effect */}
-              <div className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-300"></div>
-            </Link>
-          </div>
+          {/* Error State */}
+          {error && (
+            <div className="text-center py-20">
+              <div className="max-w-md mx-auto p-8 bg-red-900/20 border border-red-500/30 rounded-2xl">
+                <p className="text-red-400 text-xl mb-4">Error loading bikes</p>
+                <p className="text-gray-300">{error}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Bikes Grid */}
+          {!loading && !error && featuredBikes.length > 0 && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {featuredBikes.map((bike, index) => (
+                  <div 
+                    key={bike.id}
+                    className="transform transition-all duration-500 hover:scale-105 hover:-translate-y-3"
+                    style={{ animationDelay: `${index * 200}ms` }}
+                  >
+                    <div className="relative group">
+                      <BikeCard bike={bike} featured />
+                      {/* Card glow effect */}
+                      <div className="absolute -inset-2 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="text-center mt-16">
+                <Link
+                  to="/catalogue"
+                  className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-green-500 to-blue-500 text-white 
+                           rounded-xl font-bold text-lg hover:from-green-600 hover:to-blue-600 transform hover:scale-110 
+                           transition-all duration-300 shadow-2xl hover:shadow-green-500/25 group relative overflow-hidden
+                           border border-green-400/30 hover:border-green-400/60"
+                >
+                  {/* Button glow background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-blue-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  
+                  <span className="relative z-10">View All Bikes</span>
+                  <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform duration-300 relative z-10" />
+                  
+                  {/* Animated shine effect */}
+                  <div className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-300"></div>
+                </Link>
+              </div>
+            </>
+          )}
+
+          {/* No Bikes Available */}
+          {!loading && !error && featuredBikes.length === 0 && (
+            <div className="text-center py-20">
+              <p className="text-gray-300 text-xl">No featured bikes available at the moment.</p>
+            </div>
+          )}
         </div>
       </section>
     </div>
