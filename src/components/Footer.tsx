@@ -10,9 +10,6 @@ const Footer = () => {
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center space-x-2 mb-4">
-              <div className="p-2 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg">
-                <Bike className="h-6 w-6 text-white" />
-              </div>
               <span className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
                 Infiniti Drive
               </span>
@@ -81,8 +78,19 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 Infiniti Drive. All rights reserved.</p>
+        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 --bg-red-200 flex flex-row justify-between">
+          <p>&copy; 2025 Infiniti Drive. All rights reserved.</p>
+          <p className="mt-2">
+            Made with <span className="text-red-400">♥</span> by{' '}
+            <a 
+              href="https://www.obsidyne.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-green-400 hover:text-green-300 transition-colors duration-300"
+            >
+              Obsidyne
+            </a>
+          </p>
         </div>
       </div>
     </footer>
