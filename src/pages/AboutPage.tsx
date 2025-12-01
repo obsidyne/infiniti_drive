@@ -90,21 +90,24 @@ const AboutPage = () => {
               Our Story
             </h2>
             <div className="space-y-6 text-gray-300 leading-relaxed">
-              <p className="text-lg hover:text-white transition-colors duration-300 p-4 rounded-lg hover:bg-gray-800/30 backdrop-blur-sm">
-                Founded in 2009, Infiniti Drive started as a small family business with a simple mission: 
-                to provide quality second-hand bikes at fair prices. What began as a single showroom has 
-                grown into one of the region's most trusted bike dealerships.
+              <p className="text-lg text-justify hover:text-white transition-colors duration-300 p-4 rounded-lg hover:bg-gray-800/30 backdrop-blur-sm">
+              Infiniti Drives was established in 2024 by a team of dedicated motorcycling specialists whose collective passion
+               extended far beyond the ride itself. The mission was clear: to establish the region's premier platform for acquiring exceptional, 
+               meticulously maintained pre-owned motorcycles.What began as a focused endeavor quickly evolved into a trusted dealership, built 
+               on the recognition that discerning riders seek more than just a transaction—they seek assurance, quality, and specialized
+                guidance from reliable experts. This shared vision drove our founding team to establish rigorous, proprietary sourcing
+                 standards and cultivate deep, lasting relationships within the industry. 
               </p>
-              <p className="text-lg hover:text-white transition-colors duration-300 p-4 rounded-lg hover:bg-gray-800/30 backdrop-blur-sm">
-                Our founder, passionate about motorcycles since childhood, recognized the need for a 
-                reliable platform where riders could find well-maintained, thoroughly inspected used bikes. 
-                This vision drove us to establish rigorous quality standards and build lasting relationships 
-                with our customers.
+              <p className="text-lg  text-justify hover:text-white transition-colors duration-300 p-4 rounded-lg hover:bg-gray-800/30 backdrop-blur-sm">
+              Today, we honor those founding principles by applying our unrivaled collective expertise to every acquisition and sale.
+               We proudly curate a diverse selection of two-wheeled machines, spanning seamless urban navigators to potent, top-tier
+                superbikes. At Infiniti Drives, we provide the professional service and transparent process necessary to secure your
+                 perfect, high-performance acquisition.
               </p>
-              <p className="text-lg hover:text-white transition-colors duration-300 p-4 rounded-lg hover:bg-gray-800/30 backdrop-blur-sm">
+              {/* <p className="text-lg hover:text-white transition-colors duration-300 p-4 rounded-lg hover:bg-gray-800/30 backdrop-blur-sm">
                 Today, we continue to uphold those founding principles while embracing modern technology 
                 and expanding our services to better serve the riding community.
-              </p>
+              </p> */}
             </div>
           </div>
           <div className="relative group">
@@ -128,15 +131,16 @@ const AboutPage = () => {
           {/* Background glow */}
           <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-blue-500/5 opacity-50"></div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 relative z-10 text-justify">
             <div className="group">
               <h3 className="text-2xl font-bold mb-6 text-white group-hover:text-green-400 transition-colors duration-300">
                 Our Mission
               </h3>
               <p className="text-gray-300 leading-relaxed text-lg group-hover:text-white transition-colors duration-300">
-                To democratize access to quality motorcycles by providing transparent, reliable, 
-                and affordable second-hand bikes while delivering exceptional customer experiences 
-                that build lifelong relationships.
+              To set the highest standard for buying and selling quality pre-owned motorcycles. 
+              We aim to make your journey easy and rewarding by using our deep expertise to offer
+               a carefully selected range of exceptional bikes. Our goal is to ensure every purchase
+                is a solid investment in both performance and peace of mind, building long-term trust with every rider.
               </p>
             </div>
             <div className="group">
@@ -145,10 +149,10 @@ const AboutPage = () => {
               </h3>
               <ul className="space-y-4 text-gray-300 text-lg">
                 {[
-                  { text: 'Transparency in all transactions and communications', color: 'blue' },
-                  { text: 'Quality assurance through rigorous inspection processes', color: 'green' },
-                  { text: 'Customer-first approach in everything we do', color: 'blue' },
-                  { text: 'Continuous innovation and improvement', color: 'green' }
+                  { text: 'Uncompromising Transparency: Ensuring absolute clarity and integrity in every transaction, communication, and appraisal process.', color: 'blue' },
+                  { text: 'Masterful Quality Assurance: Upholding the highest standards through proprietary, rigorous inspection and reconditioning protocols.', color: 'green' },
+                  { text: 'Client-Centric Dedication: Committing to an exceptional, personalized service experience that anticipates and exceeds the needs of the discerning rider.', color: 'blue' },
+                  { text: 'Relentless Pursuit of Excellence: Driving continuous improvement in our sourcing, servicing, and client engagement to define the market standard.', color: 'green' }
                 ].map((value, index) => (
                   <li 
                     key={index}

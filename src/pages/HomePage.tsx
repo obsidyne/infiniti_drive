@@ -176,8 +176,7 @@ const HomePage: React.FC = () => {
             iNFINITi DRIVES
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
-            Discover premium second-hand bikes with unmatched quality and reliability. 
-            Your perfect ride awaits.
+          The Gold Standard in Pre-Owned Motorcycles. Quality, Assured.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -216,16 +215,18 @@ const HomePage: React.FC = () => {
               <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
                 About Infiniti Drive
               </h2>
-              <div className="space-y-6">
+              <div className="space-y-6 text-justify">
                 <p className="text-gray-300 text-lg leading-relaxed drop-shadow-sm">
-                  With over years of experience in the motorcycle industry, Infiniti Drive has established 
-                  itself as the most trusted name in second-hand bike sales. We specialize in providing 
-                  high-quality, thoroughly inspected motorcycles that deliver exceptional value and reliability.
+                Infiniti Drives was established in 2024, yet our foundation is built upon years of specialized expertise
+                 in the motorcycle industry. We have rapidly become the premier destination for exceptional pre-owned two-wheeled machines.
+                  Our team excels in sourcing and dealing with every high-performance and reliable segment—from models built for seamless 
+                  urban navigation to potent, top-tier superbikes engineered for exhilaration.
+
                 </p>
                 <p className="text-gray-300 text-lg leading-relaxed drop-shadow-sm">
-                  Our commitment to transparency, quality assurance, and customer satisfaction has helped 
-                  thousands of riders find their perfect bike. Every motorcycle in our inventory undergoes 
-                  rigorous inspection and comes with comprehensive warranty protection.
+                  Our commitment to excellence ensures that every motorcycle in our curated selection is an exceptional acquisition. 
+                  We combine this expertise with professional guidance and a transparent process to help you secure the perfect machine 
+                  that matches your pursuit. Trust Infiniti Drives to deliver not just a motorcycle, but a premium riding experience.
                 </p>
               </div>
               
@@ -303,7 +304,7 @@ const HomePage: React.FC = () => {
               Why Choose Infiniti Drive?
             </h2>
             <p className="text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
-              We provide exceptional service and quality assurance for every bike in our collection.
+            We fulfill your motorcycling dream with a flawlessly preserved masterpiece, poised for your immediate command.
             </p>
           </div>
 

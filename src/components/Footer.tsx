@@ -1,22 +1,31 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Bike, Phone, Mail, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
 
 const Footer = () => {
+  const navigate = useNavigate();
+
+  const handleNavigation = (path) => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate(path);
+  };
+
   return (
     <footer className="bg-gray-800 border-t border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
-            <Link to="/" className="flex items-center space-x-2 mb-4">
+            <button 
+              onClick={() => handleNavigation('/')} 
+              className="flex items-center space-x-2 mb-4 cursor-pointer"
+            >
               <span className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
                 Infiniti Drive
               </span>
-            </Link>
+            </button>
             <p className="text-gray-400 mb-6 max-w-md">
-              Your trusted partner for premium second-hand bikes. We offer quality, reliability, 
-              and excellent service to help you find your perfect ride.
+            Explore Our Curated Portfolio of Exceptional Pre-Owned Motorcycles.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-green-400 transition-colors duration-300">
@@ -36,24 +45,36 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4 text-white">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-gray-400 hover:text-white transition-colors duration-300">
+                <button 
+                  onClick={() => handleNavigation('/')} 
+                  className="text-gray-400 hover:text-white transition-colors duration-300 text-left"
+                >
                   Home
-                </Link>
+                </button>
               </li>
               <li>
-                <Link to="/about" className="text-gray-400 hover:text-white transition-colors duration-300">
+                <button 
+                  onClick={() => handleNavigation('/about')} 
+                  className="text-gray-400 hover:text-white transition-colors duration-300 text-left"
+                >
                   About Us
-                </Link>
+                </button>
               </li>
               <li>
-                <Link to="/catalogue" className="text-gray-400 hover:text-white transition-colors duration-300">
+                <button 
+                  onClick={() => handleNavigation('/catalogue')} 
+                  className="text-gray-400 hover:text-white transition-colors duration-300 text-left"
+                >
                   Catalogue
-                </Link>
+                </button>
               </li>
               <li>
-                <Link to="/contact" className="text-gray-400 hover:text-white transition-colors duration-300">
+                <button 
+                  onClick={() => handleNavigation('/contact')} 
+                  className="text-gray-400 hover:text-white transition-colors duration-300 text-left"
+                >
                   Contact
-                </Link>
+                </button>
               </li>
             </ul>
           </div>
@@ -78,7 +99,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 --bg-red-200 flex flex-row justify-between">
+        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 flex flex-row justify-between">
           <p>&copy; 2025 Infiniti Drive. All rights reserved.</p>
           <p className="mt-2">
             Made with <span className="text-red-400">♥</span> by{' '}
