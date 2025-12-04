@@ -29,13 +29,22 @@ const Navbar = () => {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center space-x-2 group">
+          <Link 
+            to="/" 
+            className="flex items-center space-x-2 group"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
             {/* <div className="p-2 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg group-hover:scale-110 transition-transform duration-300">
               <Bike className="h-6 w-6 text-white" />
             </div> */}
-            <span className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+            <img
+              src='crop.png'
+              alt='logo'
+              className='w-15 h-8'
+            />
+            {/* <span className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
               Infiniti Drive
-            </span>
+            </span> */}
           </Link>
 
           {/* Desktop Navigation */}

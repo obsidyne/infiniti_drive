@@ -171,7 +171,12 @@ const HomePage: React.FC = () => {
           />
         </div>
         
-        <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+        <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto flex flex-col items-center justify-center">
+          <img
+            src="crop.png"
+            alt="logo"
+             className="w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-60 mb-0 object-contain"
+          />
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-green-400 via-blue-400 to-teal-400 bg-clip-text text-transparent --animate-pulse">
             iNFINITi DRIVES
           </h1>
