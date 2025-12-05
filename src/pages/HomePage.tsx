@@ -165,9 +165,9 @@ const HomePage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-blue-900/20 to-purple-900/20"></div>
         <div className="absolute inset-0">
           <img 
-            src="s1000rr.jpg"
+            src="galaxy.jpg"
             alt="Hero"
-            className="w-full h-full object-cover opacity-20"
+            className="w-full h-full object-cover opacity-90"
           />
         </div>
         
@@ -175,12 +175,12 @@ const HomePage: React.FC = () => {
           <img
             src="crop.png"
             alt="logo"
-             className="w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-60 mb-0 object-contain"
+             className="w-48 h-32 md:w-64 md:h-42 lg:w-80 lg:h-60 mb-0 object-contain"
           />
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-green-400 via-blue-400 to-teal-400 bg-clip-text text-transparent --animate-pulse">
+          <h1 className="text-4xl md:text-4xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-green-400 via-blue-400 to-teal-400 bg-clip-text text-transparent --animate-pulse">
             iNFINITi DRIVES
           </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
+          <p className="text-xl md:text-1xl text-gray-300 mb-8 leading-relaxed">
           The Gold Standard in Pre-Owned Motorcycles. Quality, Assured.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
