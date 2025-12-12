@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Star, Shield, Wrench, Users } from 'lucide-react';
 import BikeCard from '../components/BikeCard';
 import { BASE_URL } from '../data/url';
+import Twinke from '../components/Twinkle';
+import Foot from '../components/Footer';
 
 // Strapi API Response Types
 interface StrapiImageFormat {
@@ -160,15 +162,17 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen">
+      
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-blue-900/20 to-purple-900/20"></div>
+      <section className="relative h-screen flex items-center justify-center  pb-40 overflow-hidden">
+        <div className="absolute inset-0 bg-transparent"></div>
         <div className="absolute inset-0">
-          <img 
+          {/* <img 
             src="galaxy.jpg"
             alt="Hero"
             className="w-full h-full object-cover opacity-90"
-          />
+          /> */}
+          <Twinke/>
         </div>
         
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto flex flex-col items-center justify-center">
@@ -477,6 +481,7 @@ const HomePage: React.FC = () => {
           )}
         </div>
       </section>
+      
     </div>
   );
 };

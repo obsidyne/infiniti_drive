@@ -11,9 +11,9 @@ import BikeDetailPage from './pages/BikeDetailPage';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-900 text-white">
+      <div className="min-h-screen --bg-gray-900 text-white">
         <Navbar />
-        <main className="pt-16">
+        <main className="pt-16 z-10">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
