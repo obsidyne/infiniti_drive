@@ -112,7 +112,8 @@ const CataloguePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortBy, setSortBy] = useState<SortOption>('name');
   const [filterBrand, setFilterBrand] = useState<string>('');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000000]);
+  const [minPrice, setMinPrice] = useState<string>('');
+  const [maxPrice, setMaxPrice] = useState<string>('');
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [showSoldBikes, setShowSoldBikes] = useState<boolean>(true);
 
@@ -174,10 +175,12 @@ const CataloguePage: React.FC = () => {
   }, [bikes]);
 
   const filterAndSortBikes = (bikesToFilter: Bike[]): Bike[] => {
-    let filtered = bikesToFilter.filter(bike => 
+    const min = minPrice === '' ? 0 : parseInt(minPrice) || 0;
+    const max = maxPrice === '' ? Infinity : parseInt(maxPrice) || Infinity;
+    let filtered = bikesToFilter.filter(bike =>
       bike.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (filterBrand === '' || bike.brand === filterBrand) &&
-      bike.price >= priceRange[0] && bike.price <= priceRange[1]
+      bike.price >= min && bike.price <= max
     );
 
     filtered.sort((a, b) => {
@@ -202,20 +205,21 @@ const CataloguePage: React.FC = () => {
     return filtered;
   };
 
-  const filteredAvailableBikes = useMemo(() => 
-    filterAndSortBikes(availableBikes), 
-    [availableBikes, searchTerm, sortBy, filterBrand, priceRange]
+  const filteredAvailableBikes = useMemo(() =>
+    filterAndSortBikes(availableBikes),
+    [availableBikes, searchTerm, sortBy, filterBrand, minPrice, maxPrice]
   );
 
-  const filteredSoldBikes = useMemo(() => 
-    filterAndSortBikes(soldBikes), 
-    [soldBikes, searchTerm, sortBy, filterBrand, priceRange]
+  const filteredSoldBikes = useMemo(() =>
+    filterAndSortBikes(soldBikes),
+    [soldBikes, searchTerm, sortBy, filterBrand, minPrice, maxPrice]
   );
 
   const handleClearFilters = (): void => {
     setSearchTerm('');
     setFilterBrand('');
-    setPriceRange([0, 5000000]);
+    setMinPrice('');
+    setMaxPrice('');
     setSortBy('name');
   };
 
@@ -420,14 +424,14 @@ const CataloguePage: React.FC = () => {
                   {/* Price Range */}
                   <div className="group">
                     <label className="block text-sm font-semibold text-gray-300 mb-3 group-hover:text-blue-400 transition-colors duration-300">
-                      Price Range: Rs.{priceRange[0].toLocaleString()} - Rs.{priceRange[1].toLocaleString()}
+                      Price Range
                     </label>
                     <div className="flex space-x-3">
                       <input
                         type="number"
                         placeholder="Min"
-                        value={priceRange[0]}
-                        onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
+                        value={minPrice}
+                        onChange={(e) => setMinPrice(e.target.value)}
                         className="w-full px-4 py-3 bg-gray-700/80 backdrop-blur-sm border border-gray-600/50 rounded-xl text-white placeholder-gray-400
                                  focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/50 hover:border-gray-500/70 transition-all duration-300
                                  shadow-lg hover:shadow-blue-500/10"
@@ -435,8 +439,8 @@ const CataloguePage: React.FC = () => {
                       <input
                         type="number"
                         placeholder="Max"
-                        value={priceRange[1]}
-                        onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 5000000])}
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(e.target.value)}
                         className="w-full px-4 py-3 bg-gray-700/80 backdrop-blur-sm border border-gray-600/50 rounded-xl text-white placeholder-gray-400
                                  focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/50 hover:border-gray-500/70 transition-all duration-300
                                  shadow-lg hover:shadow-blue-500/10"
