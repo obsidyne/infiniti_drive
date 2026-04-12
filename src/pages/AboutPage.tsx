@@ -34,9 +34,10 @@ const AboutPage = () => {
           <h1 className="text-4xl md:text-5xl font-bold mb-8 bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent drop-shadow-sm animate-pulse">
             About Infiniti Drive
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            We're passionate about connecting riders with their perfect bikes. With years of experience 
-            in the industry, we've built a reputation for quality, trust, and exceptional service.
+          <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed text-justify">
+          Infiniti Drives was established just over a year ago, yet our foundation is built upon years of specialized expertise in the motorcycle industry. We have rapidly become the premier destination for exceptional pre-owned two-wheeled machines. Our team excels in sourcing and dealing with every high-performance and reliable segment—from models built for seamless urban navigation to potent, top-tier superbikes engineered for exhilaration.
+<br /> <br />
+Our commitment to excellence ensures that every motorcycle in our curated selection is an exceptional acquisition. We combine this expertise with professional guidance and a transparent process to help you secure the perfect machine that matches your pursuit. Trust Infiniti Drives to deliver not just a motorcycle, but a premium riding experience.
           </p>
           
           {/* Decorative line */}

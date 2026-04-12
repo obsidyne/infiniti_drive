@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, Filter, SortAsc, EyeOff, Eye } from 'lucide-react';
+import { Search, Filter, SortAsc, EyeOff, Eye, X } from 'lucide-react';
 import BikeCard from '../components/BikeCard';
 import { BASE_URL } from '../data/url';
 
@@ -116,6 +116,7 @@ const CataloguePage: React.FC = () => {
   const [maxPrice, setMaxPrice] = useState<string>('');
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [showSoldBikes, setShowSoldBikes] = useState<boolean>(true);
+  const [showMobileFilters, setShowMobileFilters] = useState<boolean>(false);
 
   // Fetch bikes from Strapi API
   useEffect(() => {
@@ -317,7 +318,7 @@ const CataloguePage: React.FC = () => {
             Our Catalogue
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            Browse our extensive collection of quality second-hand bikes
+          Explore Our Curated Portfolio of Exceptional Pre-Owned Motorcycles.
           </p>
           
           {/* Decorative line */}
@@ -326,8 +327,152 @@ const CataloguePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Search and Filter Bar */}
-        <div className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 backdrop-blur-sm rounded-2xl p-8 mb-12 border border-gray-600/30 hover:border-gray-500/50 transition-all duration-300 shadow-2xl shadow-green-500/5 relative overflow-hidden">
+        {/* Mobile Filter Button (visible only on mobile) */}
+        <button
+          onClick={() => setShowMobileFilters(true)}
+          className="md:hidden fixed top-20 right-4 z-40 flex items-center space-x-2 px-4 py-3 bg-gradient-to-r from-green-500 to-blue-500 rounded-xl text-white shadow-lg shadow-green-500/30 border border-green-400/30 hover:from-green-600 hover:to-blue-600 transition-all duration-300"
+        >
+          <Filter className="h-5 w-5" />
+          <span className="font-semibold text-sm">Filters</span>
+        </button>
+
+        {/* Mobile Filter Drawer */}
+        {showMobileFilters && (
+          <div className="md:hidden fixed inset-0 z-50">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setShowMobileFilters(false)}
+            />
+            {/* Drawer */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-br from-gray-800 to-gray-900 rounded-t-2xl border-t border-gray-600/30 p-6 max-h-[85vh] overflow-y-auto animate-slideUp">
+              {/* Drag handle */}
+              <div className="flex justify-center mb-4">
+                <div className="w-10 h-1 bg-gray-600 rounded-full"></div>
+              </div>
+
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-white font-bold text-lg">Search & Filters</h3>
+                <button
+                  onClick={() => setShowMobileFilters(false)}
+                  className="p-2 rounded-lg bg-gray-700/60 hover:bg-gray-600/60 transition-colors duration-200"
+                >
+                  <X className="h-5 w-5 text-gray-400" />
+                </button>
+              </div>
+
+              <div className="space-y-5">
+                {/* Search */}
+                <div className="relative group">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 group-hover:text-green-400 transition-colors duration-300" />
+                  <input
+                    type="text"
+                    placeholder="Search bikes..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-12 pr-4 py-4 bg-gray-700/80 border border-gray-600/50 rounded-xl text-white placeholder-gray-400
+                             focus:ring-2 focus:ring-green-500/50 focus:border-green-400/50 transition-all duration-300"
+                  />
+                </div>
+
+                {/* Sort */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Sort By</label>
+                  <div className="flex items-center space-x-3">
+                    <SortAsc className="text-gray-400 h-5 w-5 flex-shrink-0" />
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value as SortOption)}
+                      className="flex-1 px-4 py-3 bg-gray-700/80 border border-gray-600/50 rounded-xl text-white
+                               focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/50 transition-all duration-300 cursor-pointer"
+                    >
+                      <option value="name">Name A-Z</option>
+                      <option value="price-low">Price: Low to High</option>
+                      <option value="price-high">Price: High to Low</option>
+                      <option value="year-new">Year: Newest First</option>
+                      <option value="year-old">Year: Oldest First</option>
+                      <option value="km-low">KM: Low to High</option>
+                      <option value="km-high">KM: High to Low</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Brand Filter */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Brand</label>
+                  <select
+                    value={filterBrand}
+                    onChange={(e) => setFilterBrand(e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-700/80 border border-gray-600/50 rounded-xl text-white
+                             focus:ring-2 focus:ring-green-500/50 focus:border-green-400/50 transition-all duration-300 cursor-pointer"
+                  >
+                    <option value="">All Brands</option>
+                    {brands.map(brand => (
+                      <option key={brand} value={brand}>{brand}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Price Range */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Price Range</label>
+                  <div className="flex space-x-3">
+                    <input
+                      type="number"
+                      placeholder="Min"
+                      value={minPrice}
+                      onChange={(e) => setMinPrice(e.target.value)}
+                      className="w-full px-4 py-3 bg-gray-700/80 border border-gray-600/50 rounded-xl text-white placeholder-gray-400
+                               focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/50 transition-all duration-300"
+                    />
+                    <input
+                      type="number"
+                      placeholder="Max"
+                      value={maxPrice}
+                      onChange={(e) => setMaxPrice(e.target.value)}
+                      className="w-full px-4 py-3 bg-gray-700/80 border border-gray-600/50 rounded-xl text-white placeholder-gray-400
+                               focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/50 transition-all duration-300"
+                    />
+                  </div>
+                </div>
+
+                {/* Show/Hide Sold */}
+                {soldBikes.length > 0 && (
+                  <button
+                    onClick={() => setShowSoldBikes(!showSoldBikes)}
+                    className="w-full flex items-center justify-center space-x-3 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600
+                             rounded-xl text-white transition-all duration-300 shadow-lg border border-purple-400/30"
+                  >
+                    {showSoldBikes ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    <span className="font-semibold">{showSoldBikes ? 'Hide' : 'Show'} Sold Bikes</span>
+                  </button>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex space-x-3 pt-2 pb-2">
+                  <button
+                    onClick={handleClearFilters}
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600
+                             rounded-xl text-white font-semibold transition-all duration-300 shadow-lg"
+                  >
+                    Clear All
+                  </button>
+                  <button
+                    onClick={() => setShowMobileFilters(false)}
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600
+                             rounded-xl text-white font-semibold transition-all duration-300 shadow-lg"
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Search and Filter Bar (desktop only) */}
+        <div className="hidden md:block bg-gradient-to-br from-gray-800/80 to-gray-700/80 backdrop-blur-sm rounded-2xl p-8 mb-12 border border-gray-600/30 hover:border-gray-500/50 transition-all duration-300 shadow-2xl shadow-green-500/5 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-blue-500/5 opacity-50"></div>
           
           <div className="flex flex-col lg:flex-row gap-6 items-center relative z-10">
@@ -524,14 +669,23 @@ const CataloguePage: React.FC = () => {
           from { opacity: 0; transform: translateY(-10px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        
+
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(30px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        
+
+        @keyframes slideUp {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
+        }
+
         .animate-fadeIn {
           animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .animate-slideUp {
+          animation: slideUp 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
         }
       `}</style>
     </div>
